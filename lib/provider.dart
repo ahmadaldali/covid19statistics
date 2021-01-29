@@ -55,10 +55,6 @@ class SummaryProvider extends ChangeNotifier {
     if (response.statusCode == 200) {
       var jsonResponse = jsonDecode(response.body);
       _countries = jsonResponse;
-      print(jsonResponse[0]['country']);
-      print(jsonResponse[0]['cases']);
-      print(jsonResponse[0]['deaths']);
-      print(jsonResponse[0]['tests']);
     } else {
       print('Request failed with status: ${response.statusCode}.');
     }
