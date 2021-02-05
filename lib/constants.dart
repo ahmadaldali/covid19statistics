@@ -17,4 +17,22 @@ class Constants {
 
     return newStr;
   }
+
+  static Widget buildLoading() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CircularProgressIndicator(
+            backgroundColor: Colors.red,
+            strokeWidth: 4,
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Text('Loading')
+        ],
+      ),
+    );
+  }
 }

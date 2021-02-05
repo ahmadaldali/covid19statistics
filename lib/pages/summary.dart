@@ -21,13 +21,6 @@ class _SummaryState extends State<Summary> {
     "tests_total"
   ];
 
-  int _currentIndex = 0;
-  void _setIndex(int newVal) {
-    setState(() {
-      _currentIndex = newVal;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Padding(

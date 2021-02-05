@@ -31,6 +31,8 @@ dependencies:
   http: ^0.12.2
   provider: ^4.1.2
   font_awesome_flutter: ^8.11.0
+  carousel_slider: ^2.3.1
+  connectivity: ^2.0.2
 
 dev_dependencies:
   flutter_test:
@@ -54,6 +56,9 @@ flutter:
 
   assets:
     - assets/images/main.png
+    - assets/images/1.png
+    - assets/images/2.png
+    - assets/images/3.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

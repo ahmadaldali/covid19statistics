@@ -15,8 +15,20 @@ class SummaryProvider extends ChangeNotifier {
   };
 
   List<dynamic> _countries;
+  List<String> _allCountries;
+  Map<String, dynamic> _countryStatistics = {
+    "cn": 0,
+    "ca": 0,
+    "cc": 0,
+    "cr": 0,
+    "ct": 0,
+    "dn": 0,
+    "dt": 0,
+    "tt": 0,
+  };
 
   bool _isLoading = true;
+  bool _countryLoading = false;
 
   Map<String, dynamic> get getSummary {
     return _summary;
@@ -26,39 +38,101 @@ class SummaryProvider extends ChangeNotifier {
     return _countries;
   }
 
+  List<String> get getAllCountries {
+    return _allCountries;
+  }
+
+  Map<String, dynamic> get getCountryStatistics {
+    return _countryStatistics;
+  }
+
   bool get getLoading {
     return _isLoading;
   }
 
-  void getSummaryApi() async {
-    //print(summary["cases_new"]);
-    var url = 'https://covid.zeuor.net/api/get_summary';
-
-    // Await the http get response, then decode the json-formatted response.
-    var response = await http.get(url);
-    if (response.statusCode == 200) {
-      var jsonResponse = jsonDecode(response.body);
-      _summary = jsonResponse;
-    } else {
-      print('Request failed with status: ${response.statusCode}.');
-    }
-
-    _isLoading = false;
-
-    notifyListeners();
+  bool get getCountryLoading {
+    return _countryLoading;
   }
 
-  void getSCountriesApi() async {
-    var url = 'https://covid.zeuor.net/api/get_all_statistics';
-    // Await the http get response, then decode the json-formatted response.
-    var response = await http.get(url);
-    if (response.statusCode == 200) {
-      var jsonResponse = jsonDecode(response.body);
-      _countries = jsonResponse;
-    } else {
-      print('Request failed with status: ${response.statusCode}.');
+  void getSummaryApi() async {
+    try {
+      //print(summary["cases_new"]);
+      var url = 'https://covid.zeuor.net/api/get_summary';
+
+      // Await the http get response, then decode the json-formatted response.
+      var response = await http.get(url);
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(response.body);
+        _summary = jsonResponse;
+        _isLoading = false;
+        notifyListeners();
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void getCountriesApi() async {
+    try {
+      var url = 'https://covid.zeuor.net/api/get_all_statistics';
+      // Await the http get response, then decode the json-formatted response.
+      var response = await http.get(url);
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(response.body);
+        _countries = jsonResponse;
+
+        notifyListeners();
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void getAllCountriesApi() async {
+    try {
+      var url = 'https://covid.zeuor.net/api/get_all_countries';
+      // Await the http get response, then decode the json-formatted response.
+      var response = await http.get(url);
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(response.body);
+        _allCountries = List<String>.from(jsonResponse);
+        notifyListeners();
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void getCountryStatisticsApi(String country) async {
+    try {
+      _countryLoading = true;
+      var url = 'https://covid.zeuor.net/api/get_statistics?key=' + country;
+      // Await the http get response, then decode the json-formatted response.
+      var response = await http.get(url);
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(response.body);
+        _countryStatistics['cn'] = jsonResponse[0]['cases']['new'];
+        _countryStatistics['ca'] = jsonResponse[0]['cases']['active'];
+        _countryStatistics['cc'] = jsonResponse[0]['cases']['critical'];
+        _countryStatistics['cr'] = jsonResponse[0]['cases']['recovered'];
+        _countryStatistics['ct'] = jsonResponse[0]['cases']['total'];
+        _countryStatistics['dn'] = jsonResponse[0]['deaths']['new'];
+        _countryStatistics['dt'] = jsonResponse[0]['deaths']['total'];
+        _countryStatistics['tt'] = jsonResponse[0]['tests']['total'];
+        notifyListeners();
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e);
     }
 
-    notifyListeners();
+    _countryLoading = false;
   }
 }
